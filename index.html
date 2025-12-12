@@ -275,6 +275,17 @@
             return deck.pop();
         }
 
+        // 取得單張牌的點數
+        function getCardValue(card) {
+            if (card.rank === 'A') {
+                return 11; // A 預設為 11，後續會在 handValue 中調整
+            } else if (['J', 'Q', 'K'].includes(card.rank)) {
+                return 10;
+            } else {
+                return parseInt(card.rank);
+            }
+        }
+
         // 計算手牌點數
         function handValue(hand) {
             let total = 0;
@@ -291,7 +302,7 @@
                 }
             }
             
-            // 將一張 A 當作 11 點（如果不會爆牌）
+            // 將 A 從 1 點升級為 11 點，一次一張，只要不會爆牌
             while (aces > 0 && total + 10 <= 21) {
                 total += 10;
                 aces--;
@@ -448,14 +459,7 @@
             if (phase === 'playerTurn' && dealerHand.length > 0) {
                 // 玩家回合只顯示莊家第一張牌的點數
                 const firstCard = dealerHand[0];
-                let visibleValue = 0;
-                if (firstCard.rank === 'A') {
-                    visibleValue = 11;
-                } else if (['J', 'Q', 'K'].includes(firstCard.rank)) {
-                    visibleValue = 10;
-                } else {
-                    visibleValue = parseInt(firstCard.rank);
-                }
+                const visibleValue = getCardValue(firstCard);
                 dealerPointsEl.textContent = `點數: ${visibleValue} + ?`;
             } else if (dealerHand.length > 0) {
                 dealerPointsEl.textContent = `點數: ${handValue(dealerHand).total}`;
